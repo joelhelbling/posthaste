@@ -15,8 +15,16 @@ module Posthaste
       @body_template = config.fetch('body_template', '')
     end
 
+    def query_string_defaults
+      @parameter_defaults.fetch('query_string', {})
+    end
+
     def header_defaults
       @parameter_defaults.fetch('header', {})
+    end
+
+    def body_defaults
+      @parameter_defaults.fetch('body', {})
     end
 
     def query_string_required

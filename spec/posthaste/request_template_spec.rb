@@ -8,8 +8,12 @@ RSpec.describe Posthaste::RequestTemplate do
       method: POST
       endpoint: /posts
       parameter_defaults:
+        query_string:
+          version: 9.9
         header:
           Content-Type: application/json
+        body:
+          text: Lorem ipsum
       required_parameters:
         query_string:
           - author
@@ -19,7 +23,7 @@ RSpec.describe Posthaste::RequestTemplate do
         body:
           - title
           - text
-      body_template: |-
+      body_template: |
         {
           "article_title": "<%= title %>",
           "article_body": "<%= text %>"
@@ -100,6 +104,22 @@ RSpec.describe Posthaste::RequestTemplate do
     end
   end
 
+  describe '#query_string_defaults' do
+    context 'with parameters' do
+      Then { subject.query_string_defaults == { 'version' => 9.9 } }
+    end
+
+    context 'without default query string parameters' do
+      Given { yaml['parameter_defaults'].delete 'query_string' }
+      Then { subject.query_string_defaults == {} }
+    end
+
+    context 'without default parameters' do
+      Given { yaml.delete 'parameter_defaults' }
+      Then { subject.query_string_defaults == {} }
+    end
+  end
+
   describe '#header_defaults' do
     context 'with parameters' do
       Then do
@@ -115,6 +135,24 @@ RSpec.describe Posthaste::RequestTemplate do
     context 'without default parameters' do
       Given { yaml.delete 'parameter_defaults' }
       Then { subject.header_defaults == {} }
+    end
+  end
+
+  describe '#body_defaults' do
+    context 'with parameters' do
+      Then do
+        subject.body_defaults == { 'text' => 'Lorem ipsum' }
+      end
+    end
+
+    context 'without default header parameters' do
+      Given { yaml['parameter_defaults'].delete 'body' }
+      Then { subject.body_defaults == {} }
+    end
+
+    context 'without default parameters' do
+      Given { yaml.delete 'parameter_defaults' }
+      Then { subject.body_defaults == {} }
     end
   end
 
@@ -169,7 +207,7 @@ RSpec.describe Posthaste::RequestTemplate do
   describe '#body_template' do
     context 'with defined' do
       Then do
-        expect(subject.body_template).to eq(<<~JSON.chomp)
+        expect(subject.body_template).to eq(<<~JSON)
           {
             "article_title": "<%= title %>",
             "article_body": "<%= text %>"
