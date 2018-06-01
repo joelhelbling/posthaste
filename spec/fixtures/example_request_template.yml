@@ -1,0 +1,22 @@
+---
+name: create article
+method: POST
+endpoint: /posts
+parameter_defaults:
+  header:
+    Content-Type: application/json
+required_parameters:
+  query_string:
+    - author
+    - topic
+  header:
+    - Authorization
+  body:
+    - title
+    - text
+body_template: |-
+  {
+    "article_title": "<%= title %>",
+    "article_body": "<%= text %>"
+  }
+
