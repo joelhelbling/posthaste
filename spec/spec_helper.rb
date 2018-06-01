@@ -1,5 +1,6 @@
 require 'bundler/setup'
 require 'rspec/given'
+require 'fakefs/spec_helpers'
 require 'posthaste'
 
 RSpec.configure do |config|
@@ -12,4 +13,7 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  # use a fake filesystem when the :fakefs tag is used
+  config.include FakeFS::SpecHelpers, fakefs: true
 end
